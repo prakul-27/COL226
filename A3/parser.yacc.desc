@@ -12,7 +12,7 @@ state 0:
 	NUM	shift 5
 	NEGATE	shift 4
 
-	program	goto 54
+	program	goto 53
 	statements	goto 3
 	statement	goto 2
 	formula	goto 1
@@ -113,7 +113,7 @@ state 6:
 
 	formula : LET . decleration IN formula END 
 
-	VAL	shift 27
+	ID	shift 27
 
 	decleration	goto 26
 
@@ -441,9 +441,9 @@ state 26:
 
 state 27:
 
-	decleration : VAL . ID EQ formula 
+	decleration : ID . EQ formula 
 
-	ID	shift 43
+	EQ	shift 43
 
 
 	.	error
@@ -844,10 +844,18 @@ state 42:
 
 state 43:
 
-	decleration : VAL ID . EQ formula 
+	decleration : ID EQ . formula 
 
-	EQ	shift 47
+	ID	shift 11
+	CONST	shift 10
+	NOT	shift 9
+	IF	shift 8
+	LPAREN	shift 7
+	LET	shift 6
+	NUM	shift 5
+	NEGATE	shift 4
 
+	formula	goto 47
 
 	.	error
 
@@ -913,20 +921,33 @@ state 46:
 
 state 47:
 
-	decleration : VAL ID EQ . formula 
+	formula : formula . AND formula 
+	formula : formula . OR formula 
+	formula : formula . XOR formula 
+	formula : formula . EQUALS formula 
+	formula : formula . IMPLIES formula 
+	formula : formula . PLUS formula 
+	formula : formula . MINUS formula 
+	formula : formula . TIMES formula 
+	formula : formula . EQ formula 
+	formula : formula . GREATERTHAN formula 
+	formula : formula . LESSTHAN formula 
+	decleration : ID EQ formula .  (reduce by rule 4)
 
-	ID	shift 11
-	CONST	shift 10
-	NOT	shift 9
-	IF	shift 8
-	LPAREN	shift 7
-	LET	shift 6
-	NUM	shift 5
-	NEGATE	shift 4
+	AND	shift 22
+	OR	shift 21
+	XOR	shift 20
+	EQUALS	shift 19
+	IMPLIES	shift 18
+	EQ	shift 17
+	TIMES	shift 16
+	PLUS	shift 15
+	MINUS	shift 14
+	LESSTHAN	shift 13
+	GREATERTHAN	shift 12
 
-	formula	goto 50
 
-	.	error
+	.	reduce by rule 4
 
 
 state 48:
@@ -949,7 +970,7 @@ state 48:
 	XOR	shift 20
 	EQUALS	shift 19
 	IMPLIES	shift 18
-	ELSE	shift 51
+	ELSE	shift 50
 	EQ	shift 17
 	TIMES	shift 16
 	PLUS	shift 15
@@ -972,37 +993,6 @@ state 49:
 
 state 50:
 
-	formula : formula . AND formula 
-	formula : formula . OR formula 
-	formula : formula . XOR formula 
-	formula : formula . EQUALS formula 
-	formula : formula . IMPLIES formula 
-	formula : formula . PLUS formula 
-	formula : formula . MINUS formula 
-	formula : formula . TIMES formula 
-	formula : formula . EQ formula 
-	formula : formula . GREATERTHAN formula 
-	formula : formula . LESSTHAN formula 
-	decleration : VAL ID EQ formula .  (reduce by rule 4)
-
-	AND	shift 22
-	OR	shift 21
-	XOR	shift 20
-	EQUALS	shift 19
-	IMPLIES	shift 18
-	EQ	shift 17
-	TIMES	shift 16
-	PLUS	shift 15
-	MINUS	shift 14
-	LESSTHAN	shift 13
-	GREATERTHAN	shift 12
-
-
-	.	reduce by rule 4
-
-
-state 51:
-
 	formula : IF formula THEN formula ELSE . formula FI 
 
 	ID	shift 11
@@ -1014,12 +1004,12 @@ state 51:
 	NUM	shift 5
 	NEGATE	shift 4
 
-	formula	goto 52
+	formula	goto 51
 
 	.	error
 
 
-state 52:
+state 51:
 
 	formula : formula . AND formula 
 	formula : formula . OR formula 
@@ -1039,7 +1029,7 @@ state 52:
 	XOR	shift 20
 	EQUALS	shift 19
 	IMPLIES	shift 18
-	FI	shift 53
+	FI	shift 52
 	EQ	shift 17
 	TIMES	shift 16
 	PLUS	shift 15
@@ -1051,7 +1041,7 @@ state 52:
 	.	error
 
 
-state 53:
+state 52:
 
 	formula : IF formula THEN formula ELSE formula FI .  (reduce by rule 20)
 
@@ -1060,7 +1050,7 @@ state 53:
 	.	reduce by rule 20
 
 
-state 54:
+state 53:
 
 
 	EOF	accept
@@ -1068,5 +1058,5 @@ state 54:
 
 	.	error
 
-176 of 383 action table entries left after compaction
+175 of 381 action table entries left after compaction
 27 goto table entries

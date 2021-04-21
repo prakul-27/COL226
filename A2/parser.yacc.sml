@@ -201,8 +201,8 @@ fn (i392,defaultPos,stack,
 case (i392,stack)
 of  ( 0, ( ( _, ( MlyValue.ntVOID statements1, statements1left, 
 statements1right)) :: rest671)) => let val  result = MlyValue.ntVOID
- (fn _ => ( let val  statements1 = statements1 ()
- in (print("program : statement, "))
+ (fn _ => ( let val  (statements as statements1) = statements1 ()
+ in (print("program : statements, "))
 end; ()))
  in ( LrTable.NT 0, ( result, statements1left, statements1right), 
 rest671)

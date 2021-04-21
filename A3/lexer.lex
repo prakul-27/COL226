@@ -32,8 +32,7 @@ val keywords =
   [
    ("end",  Tokens.END),
    ("in",  Tokens.IN),
-   ("let",  Tokens.LET),
-   ("val",  Tokens.VAL)
+   ("let",  Tokens.LET)
    ]
 
 
@@ -66,18 +65,18 @@ digit = [0-9];
 "XOR" => (incrColby 3;concat("XOR \"XOR\", "); Tokens.XOR(!pos,!pos));
 "EQUALS" => (incrColby 6;concat("EQUALS \"EQUALS\", "); Tokens.EQUALS(!pos,!pos));
 "IMPLIES" => (incrColby 7;concat("IMPLIES \"IMPLIES\", "); Tokens.IMPLIES(!pos,!pos));
-"IF" => (incrColby 2;concat("IF \"IF\", "); Tokens.IF(!pos,!pos));
-"THEN" => (incrColby 4;concat("THEN \"THEN\", "); Tokens.THEN(!pos,!pos));
-"ELSE" => (incrColby 4;concat("ELSE \"ELSE\", "); Tokens.ELSE(!pos,!pos));
-"FI" => (incrColby 2; concat("FI \"FI\", "); Tokens.FI(!pos,!pos));
+"if" => (incrColby 2;concat("IF \"if\", "); Tokens.IF(!pos,!pos));
+"then" => (incrColby 4;concat("THEN \"then\", "); Tokens.THEN(!pos,!pos));
+"else" => (incrColby 4;concat("ELSE \"else\", "); Tokens.ELSE(!pos,!pos));
+"fi" => (incrColby 2; concat("FI \"fi\", "); Tokens.FI(!pos,!pos));
 "(" => (incrColby 1;concat("LPAREN \"(\", "); Tokens.LPAREN(!pos,!pos));
 ")" => (incrColby 1;concat("RPAREN \")\", "); Tokens.RPAREN(!pos,!pos));
 "=" => (incrColby 1;concat("EQ \"=\", "); Tokens.EQ(!pos,!pos));
-"+" => (incrColby 1;concat("PLUS \"+\", "); Tokens.PLUS(!pos,!pos));
-"-" => (incrColby 1;concat("MINUS \"-\", "); Tokens.MINUS(!pos,!pos));
-"~" => (incrColby 1;concat("NEGATE\"~\", "); Tokens.NEGATE(!pos,!pos));
-"<=" => (incrColby 2;concat("LESSTHAN\"<=\", "); Tokens.LESSTHAN(!pos,!pos));
-">=" => (incrColby 2;concat("GREATERTHAN\">=\", "); Tokens.GREATERTHAN(!pos,!pos));
-"*" => (incrColby 1; concat("TIMES\"*\", "); Tokens.TIMES(!pos,!pos));
+"PLUS" => (incrColby 1;concat("PLUS \"+\", "); Tokens.PLUS(!pos,!pos));
+"MINUS" => (incrColby 1;concat("MINUS \"-\", "); Tokens.MINUS(!pos,!pos));
+"NEGATE" => (incrColby 1;concat("NEGATE\"~\", "); Tokens.NEGATE(!pos,!pos));
+"LESSTHAN" => (incrColby 2;concat("LESSTHAN\"<=\", "); Tokens.LESSTHAN(!pos,!pos));
+"GREATERTHAN" => (incrColby 2;concat("GREATERTHAN\">=\", "); Tokens.GREATERTHAN(!pos,!pos));
+"TIMES" => (incrColby 1; concat("TIMES\"*\", "); Tokens.TIMES(!pos,!pos));
 {alpha}+ => (incrColby (size yytext) ;findKeywords(yytext,!pos,!pos));
 . => (err := true;errorLineAndCol(!lineNumber,!colNumber);invalid_token := yytext;incrColby(size yytext);lex());

@@ -4,7 +4,7 @@
 %name BooleanAlgebra
 
 %term ID of string | EOF | TERM | CONST of string| NOT | AND | OR | XOR | EQUALS | IMPLIES | 
-	  IF | THEN | ELSE | FI | LPAREN | RPAREN | LET | IN | END | EQ | VAL | NUM of int | TIMES | PLUS | 
+	  IF | THEN | ELSE | FI | LPAREN | RPAREN | LET | IN | END | EQ | NUM of int | TIMES | PLUS | 
 	  MINUS | NEGATE | LESSTHAN | GREATERTHAN 
 
 %nonterm program of AST.exp | statements of AST.exp | statement of AST.exp | formula of AST.exp | decleration of AST.decl
@@ -34,7 +34,7 @@ program: statements (statements)
 statements: statement statements (statements) | statement (statement) 
 statement: formula TERM (formula) 
 
-decleration: VAL ID EQ formula (AST.ValDecl(ID,formula))
+decleration: ID EQ formula (AST.ValDecl(ID,formula))
 
 formula: LPAREN formula RPAREN (formula) |
 NOT formula (AST.UnExp(AST.Not,formula)) | 
