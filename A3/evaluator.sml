@@ -4,7 +4,7 @@ open AST
 
 val brokenTypes = Fail "Type is Broken!"
 
-val brokenIfThenElse = Fail "if then else fi is broken!"
+val brokenIfThenElse = Fail "if-then-else-fi then and else branch are different!"
 
 fun getBoolValue (str:string) =
     if(str = "TRUE")
