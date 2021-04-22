@@ -4,10 +4,22 @@ open AST
 
 val brokenTypes = Fail "Type is Broken!"
 
+val brokenIfThenElse = Fail "if then else fi is broken!"
+
 fun getBoolValue (str:string) =
     if(str = "TRUE")
     then true
     else false
+
+fun evalIfThenElseBool (x:bool, b1:bool, b2:bool) =
+    if x = true
+    then b1
+    else b2
+
+fun evalIfThenElseInt (x:bool, i1:int, i2:int) = 
+    if x = true
+    then i1
+    else i2
 
 fun evalExp(e:exp, env:environment):value =
     case e of
@@ -17,6 +29,7 @@ fun evalExp(e:exp, env:environment):value =
       | StringExp s         => StringVal s
       | VarExp x            => envLookup (x, env) 				  
       | BinExp (b, e1, e2)  => evalBinExp(b, e1, e2, env)
+      | TriExp (c,e1,e2,e3) => evalTriExp(c, e1, e2, e3, env)
       | LetExp(ValDecl(x, e1), e2)  =>
   	let
 	    val v1 = evalExp (e1, env)
@@ -45,4 +58,10 @@ evalBinExp (b:binop, e1:exp, e2:exp, env:environment):value =
     |   (Xor, BoolVal b1, BoolVal b2) => BoolVal ((b1 orelse b2) andalso not(b1 andalso b2))
     |   (Implies, BoolVal b1, BoolVal b2) => BoolVal ((not b1) orelse b2) 
     |   _  => raise brokenTypes
+and
+evalTriExp (c:conditional, e1:exp, e2:exp, e3:exp, env:environment):value =
+  case (c, evalExp(e1,env), evalExp(e2, env), evalExp(e3, env)) of 
+        (IfThenElse, BoolVal b1, BoolVal b2, BoolVal b3) => BoolVal (evalIfThenElseBool(b1,b2,b3))
+    |   (IfThenElse, BoolVal b1, IntVal i1, IntVal i2) => IntVal (evalIfThenElseInt(b1,i1,i2))
+    |   _ => raise brokenIfThenElse
 end
