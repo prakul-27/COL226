@@ -1,11 +1,18 @@
 structure Evaluator = 
 struct 
 open AST
-
+(*Exceptions*)
 val brokenTypes = Fail "Type is Broken!"
 
 val brokenIfThenElse = Fail "if-then-else-fi then and else branch are different!"
 
+(*Function to evaluate expressions*)
+(*fun evalStatements (statementList : statements,result : evaluations) = 
+    case statementList of
+      [] => result
+    | x::xs => evalStatements (xs,result@[evalExp(x,[])])
+*)
+(*Helper functions for evaluating expression*)
 fun getBoolValue (str:string) =
     if(str = "TRUE")
     then true
@@ -21,6 +28,7 @@ fun evalIfThenElseInt (x:bool, i1:int, i2:int) =
     then i1
     else i2
 
+(*Main function to evaluate expresssion*)
 fun evalExp(e:exp, env:environment):value =
     case e of
 	      NumExp i            => IntVal i

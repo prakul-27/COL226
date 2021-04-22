@@ -22,6 +22,16 @@ datatype value = IntVal of int
 			|	 StringVal of string
 			|	 BoolVal of bool
 
+(*AST expressions list*)
+type statements = exp list
+
+fun addASTexp (statement : exp, statementList : statements) = 
+	statement::statementList 
+
+(*Evaluation list*)
+type evaluations = value list
+
+(*Env*)
 type environment = (id * value) list
 
 fun envAdd (var:id, v:value, env:environment) =
