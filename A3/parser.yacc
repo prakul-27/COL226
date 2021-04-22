@@ -31,7 +31,7 @@
 
 %%
 program: statements (statements) 
-statements: statement statements (statements) | statement (statement) 
+statements: statement statements (statement) | statement (statement) 
 statement: formula TERM (formula) 
 
 decleration: ID EQ formula (AST.ValDecl(ID,formula))

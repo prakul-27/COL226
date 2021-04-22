@@ -290,10 +290,10 @@ rest671)
 end
 |  ( 1, ( ( _, ( MlyValue.statements statements1, _, statements1right)
 ) :: ( _, ( MlyValue.statement statement1, statement1left, _)) :: 
-rest671)) => let val  result = MlyValue.statements (fn _ => let val  
-statement1 = statement1 ()
- val  (statements as statements1) = statements1 ()
- in (statements)
+rest671)) => let val  result = MlyValue.statements (fn _ => let val  (
+statement as statement1) = statement1 ()
+ val  statements1 = statements1 ()
+ in (statement)
 end)
  in ( LrTable.NT 1, ( result, statement1left, statements1right), 
 rest671)
