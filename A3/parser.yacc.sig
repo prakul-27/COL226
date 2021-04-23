@@ -2,6 +2,13 @@ signature BooleanAlgebra_TOKENS =
 sig
 type ('a,'b) token
 type svalue
+val BOOL:  'a * 'a -> (svalue,'a) token
+val INT:  'a * 'a -> (svalue,'a) token
+val TO:  'a * 'a -> (svalue,'a) token
+val ARROW:  'a * 'a -> (svalue,'a) token
+val COLON:  'a * 'a -> (svalue,'a) token
+val FN:  'a * 'a -> (svalue,'a) token
+val FUN:  'a * 'a -> (svalue,'a) token
 val GREATERTHAN:  'a * 'a -> (svalue,'a) token
 val LESSTHAN:  'a * 'a -> (svalue,'a) token
 val NEGATE:  'a * 'a -> (svalue,'a) token

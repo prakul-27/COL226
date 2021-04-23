@@ -1,0 +1,3 @@
+(f 3);
+fn (x:int): int  => 1;
+fn g(f:int->int): int => (f 1);

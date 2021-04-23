@@ -262,12 +262,20 @@ fn (T 0) => "ID"
   | (T 24) => "NEGATE"
   | (T 25) => "LESSTHAN"
   | (T 26) => "GREATERTHAN"
+  | (T 27) => "FUN"
+  | (T 28) => "FN"
+  | (T 29) => "COLON"
+  | (T 30) => "ARROW"
+  | (T 31) => "TO"
+  | (T 32) => "INT"
+  | (T 33) => "BOOL"
   | _ => "bogus-term"
 local open Header in
 val errtermvalue=
 fn _ => MlyValue.VOID
 end
 val terms : term list = nil
+ $$ (T 33) $$ (T 32) $$ (T 31) $$ (T 30) $$ (T 29) $$ (T 28) $$ (T 27)
  $$ (T 26) $$ (T 25) $$ (T 24) $$ (T 23) $$ (T 22) $$ (T 21) $$ (T 19)
  $$ (T 18) $$ (T 17) $$ (T 16) $$ (T 15) $$ (T 14) $$ (T 13) $$ (T 12)
  $$ (T 11) $$ (T 10) $$ (T 9) $$ (T 8) $$ (T 7) $$ (T 6) $$ (T 5) $$ 
@@ -563,6 +571,20 @@ ParserData.MlyValue.VOID,p1,p2))
 fun LESSTHAN (p1,p2) = Token.TOKEN (ParserData.LrTable.T 25,(
 ParserData.MlyValue.VOID,p1,p2))
 fun GREATERTHAN (p1,p2) = Token.TOKEN (ParserData.LrTable.T 26,(
+ParserData.MlyValue.VOID,p1,p2))
+fun FUN (p1,p2) = Token.TOKEN (ParserData.LrTable.T 27,(
+ParserData.MlyValue.VOID,p1,p2))
+fun FN (p1,p2) = Token.TOKEN (ParserData.LrTable.T 28,(
+ParserData.MlyValue.VOID,p1,p2))
+fun COLON (p1,p2) = Token.TOKEN (ParserData.LrTable.T 29,(
+ParserData.MlyValue.VOID,p1,p2))
+fun ARROW (p1,p2) = Token.TOKEN (ParserData.LrTable.T 30,(
+ParserData.MlyValue.VOID,p1,p2))
+fun TO (p1,p2) = Token.TOKEN (ParserData.LrTable.T 31,(
+ParserData.MlyValue.VOID,p1,p2))
+fun INT (p1,p2) = Token.TOKEN (ParserData.LrTable.T 32,(
+ParserData.MlyValue.VOID,p1,p2))
+fun BOOL (p1,p2) = Token.TOKEN (ParserData.LrTable.T 33,(
 ParserData.MlyValue.VOID,p1,p2))
 end
 end

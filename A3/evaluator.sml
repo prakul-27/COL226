@@ -4,7 +4,7 @@ open AST
 (*Exceptions*)
 val brokenTypes = Fail "Type is Broken!"
 
-val brokenIfThenElse = Fail "if-then-else-fi then and else branch are different!"
+val brokenIfThenElse = Fail "if-then-else-fi then and else branch are different or/and if branch is not bool!"
 
 (*Function to evaluate expressions*)
 (*fun evalStatements (statementList : statements,result : evaluations) = 

@@ -32,13 +32,17 @@ val keywords =
   [
    ("end",  Tokens.END),
    ("in",  Tokens.IN),
-   ("let",  Tokens.LET)
+   ("let",  Tokens.LET),
+   ("fun", Tokens.FUN),
+   ("fn", Tokens.FN),
+   ("int", Tokens.INT),
+   ("bool", Tokens.BOOL)
    ]
 
 
 fun findKeywords (str:string, pos1:pos, pos2:pos) =
 	case List.find (fn (s, _) => s = str )  keywords of 
-		SOME (_, tk) => (concat("Keyword "^"\""^str^"\""^", "); tk(pos1, pos2))|
+		SOME (_, tk) => (concat("KEYWORD "^"\""^str^"\""^", "); tk(pos1, pos2))|
 		NONE => (concat("ID "^"\""^str^"\""^", "); Tokens.ID (str, pos1, pos2))
 
 fun concatdigits(str:string) = concat("NUM "^"\""^str^"\""^", ");
@@ -57,6 +61,9 @@ digit = [0-9];
 	     (List.foldl (fn (a,r) => ord(a) - ord(#"0") + 10*r) 0 (explode yytext),
 	      !pos, !pos));
 ";" => (incrColby 1;concat("TERM \";\", ");Tokens.TERM(!pos,!pos));
+":" => (incrColby 1;concat("COLON \":\", ");Tokens.COLON(!pos,!pos));
+"->" => (incrColby 2;concat("ARROW \"->\", ");Tokens.ARROW(!pos,!pos));
+"=>" => (incrColby 2;concat("TO \"=>\", "); Tokens.TO(!pos,!pos));
 "TRUE" => (incrColby 4; concat("CONST \"TRUE\", ");Tokens.CONST(yytext,!pos,!pos));
 "FALSE" => (incrColby 5; concat("CONST \"FALSE\", ");Tokens.CONST(yytext,!pos,!pos));
 "NOT" => (incrColby 3; concat("NOT \"NOT\", ");Tokens.NOT(!pos,!pos));
@@ -72,11 +79,11 @@ digit = [0-9];
 "(" => (incrColby 1;concat("LPAREN \"(\", "); Tokens.LPAREN(!pos,!pos));
 ")" => (incrColby 1;concat("RPAREN \")\", "); Tokens.RPAREN(!pos,!pos));
 "=" => (incrColby 1;concat("EQ \"=\", "); Tokens.EQ(!pos,!pos));
-"PLUS" => (incrColby 1;concat("PLUS \"+\", "); Tokens.PLUS(!pos,!pos));
-"MINUS" => (incrColby 1;concat("MINUS \"-\", "); Tokens.MINUS(!pos,!pos));
-"NEGATE" => (incrColby 1;concat("NEGATE\"~\", "); Tokens.NEGATE(!pos,!pos));
-"LESSTHAN" => (incrColby 2;concat("LESSTHAN\"<=\", "); Tokens.LESSTHAN(!pos,!pos));
-"GREATERTHAN" => (incrColby 2;concat("GREATERTHAN\">=\", "); Tokens.GREATERTHAN(!pos,!pos));
-"TIMES" => (incrColby 1; concat("TIMES\"*\", "); Tokens.TIMES(!pos,!pos));
+"PLUS" => (incrColby 1;concat("PLUS \"PLUS\", "); Tokens.PLUS(!pos,!pos));
+"MINUS" => (incrColby 1;concat("MINUS \"MINUS\", "); Tokens.MINUS(!pos,!pos));
+"NEGATE" => (incrColby 1;concat("NEGATE\"NEGATE\", "); Tokens.NEGATE(!pos,!pos));
+"LESSTHAN" => (incrColby 2;concat("LESSTHAN\"LESSTHAN\", "); Tokens.LESSTHAN(!pos,!pos));
+"GREATERTHAN" => (incrColby 2;concat("GREATERTHAN\"GREATERTHAN\", "); Tokens.GREATERTHAN(!pos,!pos));
+"TIMES" => (incrColby 1; concat("TIMES\"TIMES\", "); Tokens.TIMES(!pos,!pos));
 {alpha}+ => (incrColby (size yytext) ;findKeywords(yytext,!pos,!pos));
 . => (err := true;errorLineAndCol(!lineNumber,!colNumber);invalid_token := yytext;incrColby(size yytext);lex());

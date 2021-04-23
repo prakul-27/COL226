@@ -36,13 +36,17 @@ val keywords =
   [
    ("end",  Tokens.END),
    ("in",  Tokens.IN),
-   ("let",  Tokens.LET)
+   ("let",  Tokens.LET),
+   ("fun", Tokens.FUN),
+   ("fn", Tokens.FN),
+   ("int", Tokens.INT),
+   ("bool", Tokens.BOOL)
    ]
 
 
 fun findKeywords (str:string, pos1:pos, pos2:pos) =
 	case List.find (fn (s, _) => s = str )  keywords of 
-		SOME (_, tk) => (concat("Keyword "^"\""^str^"\""^", "); tk(pos1, pos2))|
+		SOME (_, tk) => (concat("KEYWORD "^"\""^str^"\""^", "); tk(pos1, pos2))|
 		NONE => (concat("ID "^"\""^str^"\""^", "); Tokens.ID (str, pos1, pos2))
 
 fun concatdigits(str:string) = concat("NUM "^"\""^str^"\""^", ");
@@ -69,10 +73,10 @@ val s = [
 \\000"
 ),
  (1, 
-"\003\003\003\003\003\003\003\003\003\003\096\003\003\003\003\003\
+"\003\003\003\003\003\003\003\003\003\003\100\003\003\003\003\003\
 \\003\003\003\003\003\003\003\003\003\003\003\003\003\003\003\003\
-\\094\003\003\003\003\003\003\003\093\092\003\003\003\003\003\003\
-\\090\090\090\090\090\090\090\090\090\090\003\089\003\088\003\003\
+\\098\003\003\003\003\003\003\003\097\096\003\003\003\094\003\003\
+\\092\092\092\092\092\092\092\092\092\092\091\090\003\088\003\003\
 \\003\085\004\004\004\079\074\063\004\056\004\004\048\043\035\033\
 \\029\004\004\004\021\004\004\004\018\004\004\003\003\003\003\003\
 \\003\004\004\004\004\014\012\004\004\010\004\004\004\004\004\004\
@@ -794,11 +798,22 @@ val s = [
 \\005\005\005\005\005\005\005\005\005\005\005\000\000\000\000\000\
 \\000"
 ),
- (90, 
+ (88, 
 "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\\091\091\091\091\091\091\091\091\091\091\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\089\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000"
+),
+ (92, 
+"\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\093\093\093\093\093\093\093\093\093\093\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
@@ -808,7 +823,18 @@ val s = [
  (94, 
 "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\\095\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\095\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000"
+),
+ (98, 
+"\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\\099\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
@@ -827,99 +853,103 @@ in Vector.fromList(List.map g
 [{fin = [], trans = 0},
 {fin = [], trans = 1},
 {fin = [], trans = 1},
-{fin = [(N 122)], trans = 0},
-{fin = [(N 120),(N 122)], trans = 4},
-{fin = [(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 6},
-{fin = [(N 120)], trans = 7},
-{fin = [(N 120)], trans = 8},
-{fin = [(N 58),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 10},
-{fin = [(N 53),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 12},
-{fin = [(N 66),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 14},
-{fin = [(N 120)], trans = 15},
-{fin = [(N 120)], trans = 16},
-{fin = [(N 63),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 18},
-{fin = [(N 120)], trans = 19},
-{fin = [(N 35),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 21},
-{fin = [(N 120)], trans = 22},
-{fin = [(N 120)], trans = 23},
-{fin = [(N 14),(N 120)], trans = 4},
-{fin = [(N 120)], trans = 25},
-{fin = [(N 120)], trans = 26},
-{fin = [(N 120)], trans = 27},
-{fin = [(N 117),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 29},
-{fin = [(N 120)], trans = 30},
-{fin = [(N 120)], trans = 31},
-{fin = [(N 77),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 33},
-{fin = [(N 31),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 35},
-{fin = [(N 120)], trans = 36},
-{fin = [(N 24),(N 120)], trans = 4},
-{fin = [(N 120)], trans = 38},
-{fin = [(N 120)], trans = 39},
-{fin = [(N 120)], trans = 40},
-{fin = [(N 120)], trans = 41},
-{fin = [(N 90),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 43},
-{fin = [(N 120)], trans = 44},
-{fin = [(N 120)], trans = 45},
-{fin = [(N 120)], trans = 46},
-{fin = [(N 83),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 48},
-{fin = [(N 120)], trans = 49},
-{fin = [(N 120)], trans = 50},
-{fin = [(N 120)], trans = 51},
-{fin = [(N 120)], trans = 52},
-{fin = [(N 120)], trans = 53},
-{fin = [(N 120)], trans = 54},
-{fin = [(N 99),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 56},
-{fin = [(N 120)], trans = 57},
-{fin = [(N 120)], trans = 58},
-{fin = [(N 120)], trans = 59},
-{fin = [(N 120)], trans = 60},
-{fin = [(N 120)], trans = 61},
-{fin = [(N 50),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 63},
-{fin = [(N 120)], trans = 64},
-{fin = [(N 120)], trans = 65},
-{fin = [(N 120)], trans = 66},
-{fin = [(N 120)], trans = 67},
-{fin = [(N 120)], trans = 68},
-{fin = [(N 120)], trans = 69},
-{fin = [(N 120)], trans = 70},
-{fin = [(N 120)], trans = 71},
-{fin = [(N 120)], trans = 72},
-{fin = [(N 111),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 74},
-{fin = [(N 120)], trans = 75},
-{fin = [(N 120)], trans = 76},
-{fin = [(N 120)], trans = 77},
-{fin = [(N 20),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 79},
-{fin = [(N 120)], trans = 80},
-{fin = [(N 120)], trans = 81},
-{fin = [(N 120)], trans = 82},
-{fin = [(N 120)], trans = 83},
-{fin = [(N 42),(N 120)], trans = 4},
-{fin = [(N 120),(N 122)], trans = 85},
-{fin = [(N 120)], trans = 86},
-{fin = [(N 28),(N 120)], trans = 4},
-{fin = [(N 72),(N 122)], trans = 0},
-{fin = [(N 9),(N 122)], trans = 0},
-{fin = [(N 7),(N 122)], trans = 90},
-{fin = [(N 7)], trans = 90},
-{fin = [(N 70),(N 122)], trans = 0},
-{fin = [(N 68),(N 122)], trans = 0},
-{fin = [(N 4),(N 122)], trans = 94},
-{fin = [(N 4)], trans = 94},
+{fin = [(N 130)], trans = 0},
+{fin = [(N 128),(N 130)], trans = 4},
+{fin = [(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 6},
+{fin = [(N 128)], trans = 7},
+{fin = [(N 128)], trans = 8},
+{fin = [(N 66),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 10},
+{fin = [(N 61),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 12},
+{fin = [(N 74),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 14},
+{fin = [(N 128)], trans = 15},
+{fin = [(N 128)], trans = 16},
+{fin = [(N 71),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 18},
+{fin = [(N 128)], trans = 19},
+{fin = [(N 43),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 21},
+{fin = [(N 128)], trans = 22},
+{fin = [(N 128)], trans = 23},
+{fin = [(N 22),(N 128)], trans = 4},
+{fin = [(N 128)], trans = 25},
+{fin = [(N 128)], trans = 26},
+{fin = [(N 128)], trans = 27},
+{fin = [(N 125),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 29},
+{fin = [(N 128)], trans = 30},
+{fin = [(N 128)], trans = 31},
+{fin = [(N 85),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 33},
+{fin = [(N 39),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 35},
+{fin = [(N 128)], trans = 36},
+{fin = [(N 32),(N 128)], trans = 4},
+{fin = [(N 128)], trans = 38},
+{fin = [(N 128)], trans = 39},
+{fin = [(N 128)], trans = 40},
+{fin = [(N 128)], trans = 41},
+{fin = [(N 98),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 43},
+{fin = [(N 128)], trans = 44},
+{fin = [(N 128)], trans = 45},
+{fin = [(N 128)], trans = 46},
+{fin = [(N 91),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 48},
+{fin = [(N 128)], trans = 49},
+{fin = [(N 128)], trans = 50},
+{fin = [(N 128)], trans = 51},
+{fin = [(N 128)], trans = 52},
+{fin = [(N 128)], trans = 53},
+{fin = [(N 128)], trans = 54},
+{fin = [(N 107),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 56},
+{fin = [(N 128)], trans = 57},
+{fin = [(N 128)], trans = 58},
+{fin = [(N 128)], trans = 59},
+{fin = [(N 128)], trans = 60},
+{fin = [(N 128)], trans = 61},
+{fin = [(N 58),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 63},
+{fin = [(N 128)], trans = 64},
+{fin = [(N 128)], trans = 65},
+{fin = [(N 128)], trans = 66},
+{fin = [(N 128)], trans = 67},
+{fin = [(N 128)], trans = 68},
+{fin = [(N 128)], trans = 69},
+{fin = [(N 128)], trans = 70},
+{fin = [(N 128)], trans = 71},
+{fin = [(N 128)], trans = 72},
+{fin = [(N 119),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 74},
+{fin = [(N 128)], trans = 75},
+{fin = [(N 128)], trans = 76},
+{fin = [(N 128)], trans = 77},
+{fin = [(N 28),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 79},
+{fin = [(N 128)], trans = 80},
+{fin = [(N 128)], trans = 81},
+{fin = [(N 128)], trans = 82},
+{fin = [(N 128)], trans = 83},
+{fin = [(N 50),(N 128)], trans = 4},
+{fin = [(N 128),(N 130)], trans = 85},
+{fin = [(N 128)], trans = 86},
+{fin = [(N 36),(N 128)], trans = 4},
+{fin = [(N 80),(N 130)], trans = 88},
+{fin = [(N 17)], trans = 0},
+{fin = [(N 9),(N 130)], trans = 0},
+{fin = [(N 11),(N 130)], trans = 0},
+{fin = [(N 7),(N 130)], trans = 92},
+{fin = [(N 7)], trans = 92},
+{fin = [(N 130)], trans = 94},
+{fin = [(N 14)], trans = 0},
+{fin = [(N 78),(N 130)], trans = 0},
+{fin = [(N 76),(N 130)], trans = 0},
+{fin = [(N 4),(N 130)], trans = 98},
+{fin = [(N 4)], trans = 98},
 {fin = [(N 1)], trans = 0}])
 end
 structure StartStates =
@@ -963,34 +993,37 @@ let fun continue() = lex() in
 			(* Application actions *)
 
   1 => (incrLineby 1; resetCol(1); pos:= !pos + 1;lex())
-| 111 => (incrColby 2;concat("GREATERTHAN\">=\", "); Tokens.GREATERTHAN(!pos,!pos))
-| 117 => (incrColby 1; concat("TIMES\"*\", "); Tokens.TIMES(!pos,!pos))
-| 120 => let val yytext=yymktext() in incrColby (size yytext) ;findKeywords(yytext,!pos,!pos) end
-| 122 => let val yytext=yymktext() in err := true;errorLineAndCol(!lineNumber,!colNumber);invalid_token := yytext;incrColby(size yytext);lex() end
-| 14 => let val yytext=yymktext() in incrColby 4; concat("CONST \"TRUE\", ");Tokens.CONST(yytext,!pos,!pos) end
-| 20 => let val yytext=yymktext() in incrColby 5; concat("CONST \"FALSE\", ");Tokens.CONST(yytext,!pos,!pos) end
-| 24 => (incrColby 3; concat("NOT \"NOT\", ");Tokens.NOT(!pos,!pos))
-| 28 => (incrColby 3;concat("AND \"AND\", ");Tokens.AND(!pos,!pos))
-| 31 => (incrColby 2;concat("OR \"OR\", "); Tokens.OR(!pos,!pos))
-| 35 => (incrColby 3;concat("XOR \"XOR\", "); Tokens.XOR(!pos,!pos))
+| 107 => (incrColby 2;concat("LESSTHAN\"LESSTHAN\", "); Tokens.LESSTHAN(!pos,!pos))
+| 11 => (incrColby 1;concat("COLON \":\", ");Tokens.COLON(!pos,!pos))
+| 119 => (incrColby 2;concat("GREATERTHAN\"GREATERTHAN\", "); Tokens.GREATERTHAN(!pos,!pos))
+| 125 => (incrColby 1; concat("TIMES\"TIMES\", "); Tokens.TIMES(!pos,!pos))
+| 128 => let val yytext=yymktext() in incrColby (size yytext) ;findKeywords(yytext,!pos,!pos) end
+| 130 => let val yytext=yymktext() in err := true;errorLineAndCol(!lineNumber,!colNumber);invalid_token := yytext;incrColby(size yytext);lex() end
+| 14 => (incrColby 2;concat("ARROW \"->\", ");Tokens.ARROW(!pos,!pos))
+| 17 => (incrColby 2;concat("TO \"=>\", "); Tokens.TO(!pos,!pos))
+| 22 => let val yytext=yymktext() in incrColby 4; concat("CONST \"TRUE\", ");Tokens.CONST(yytext,!pos,!pos) end
+| 28 => let val yytext=yymktext() in incrColby 5; concat("CONST \"FALSE\", ");Tokens.CONST(yytext,!pos,!pos) end
+| 32 => (incrColby 3; concat("NOT \"NOT\", ");Tokens.NOT(!pos,!pos))
+| 36 => (incrColby 3;concat("AND \"AND\", ");Tokens.AND(!pos,!pos))
+| 39 => (incrColby 2;concat("OR \"OR\", "); Tokens.OR(!pos,!pos))
 | 4 => (incrColby 1; lex())
-| 42 => (incrColby 6;concat("EQUALS \"EQUALS\", "); Tokens.EQUALS(!pos,!pos))
-| 50 => (incrColby 7;concat("IMPLIES \"IMPLIES\", "); Tokens.IMPLIES(!pos,!pos))
-| 53 => (incrColby 2;concat("IF \"if\", "); Tokens.IF(!pos,!pos))
-| 58 => (incrColby 4;concat("THEN \"then\", "); Tokens.THEN(!pos,!pos))
-| 63 => (incrColby 4;concat("ELSE \"else\", "); Tokens.ELSE(!pos,!pos))
-| 66 => (incrColby 2; concat("FI \"fi\", "); Tokens.FI(!pos,!pos))
-| 68 => (incrColby 1;concat("LPAREN \"(\", "); Tokens.LPAREN(!pos,!pos))
+| 43 => (incrColby 3;concat("XOR \"XOR\", "); Tokens.XOR(!pos,!pos))
+| 50 => (incrColby 6;concat("EQUALS \"EQUALS\", "); Tokens.EQUALS(!pos,!pos))
+| 58 => (incrColby 7;concat("IMPLIES \"IMPLIES\", "); Tokens.IMPLIES(!pos,!pos))
+| 61 => (incrColby 2;concat("IF \"if\", "); Tokens.IF(!pos,!pos))
+| 66 => (incrColby 4;concat("THEN \"then\", "); Tokens.THEN(!pos,!pos))
 | 7 => let val yytext=yymktext() in incrColby 1;concatdigits(yytext);Tokens.NUM
 	     (List.foldl (fn (a,r) => ord(a) - ord(#"0") + 10*r) 0 (explode yytext),
 	      !pos, !pos) end
-| 70 => (incrColby 1;concat("RPAREN \")\", "); Tokens.RPAREN(!pos,!pos))
-| 72 => (incrColby 1;concat("EQ \"=\", "); Tokens.EQ(!pos,!pos))
-| 77 => (incrColby 1;concat("PLUS \"+\", "); Tokens.PLUS(!pos,!pos))
-| 83 => (incrColby 1;concat("MINUS \"-\", "); Tokens.MINUS(!pos,!pos))
+| 71 => (incrColby 4;concat("ELSE \"else\", "); Tokens.ELSE(!pos,!pos))
+| 74 => (incrColby 2; concat("FI \"fi\", "); Tokens.FI(!pos,!pos))
+| 76 => (incrColby 1;concat("LPAREN \"(\", "); Tokens.LPAREN(!pos,!pos))
+| 78 => (incrColby 1;concat("RPAREN \")\", "); Tokens.RPAREN(!pos,!pos))
+| 80 => (incrColby 1;concat("EQ \"=\", "); Tokens.EQ(!pos,!pos))
+| 85 => (incrColby 1;concat("PLUS \"PLUS\", "); Tokens.PLUS(!pos,!pos))
 | 9 => (incrColby 1;concat("TERM \";\", ");Tokens.TERM(!pos,!pos))
-| 90 => (incrColby 1;concat("NEGATE\"~\", "); Tokens.NEGATE(!pos,!pos))
-| 99 => (incrColby 2;concat("LESSTHAN\"<=\", "); Tokens.LESSTHAN(!pos,!pos))
+| 91 => (incrColby 1;concat("MINUS \"MINUS\", "); Tokens.MINUS(!pos,!pos))
+| 98 => (incrColby 1;concat("NEGATE\"NEGATE\", "); Tokens.NEGATE(!pos,!pos))
 | _ => raise Internal.LexerError
 
 		) end )
