@@ -12,6 +12,7 @@ val brokenIfThenElse = Fail "if-then-else-fi then and else branch are different!
       [] => result
     | x::xs => evalStatements (xs,result@[evalExp(x,[])])
 *)
+
 (*Helper functions for evaluating expression*)
 fun getBoolValue (str:string) =
     if(str = "TRUE")
