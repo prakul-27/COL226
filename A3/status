@@ -4,3 +4,12 @@ Note: Always remove tabs from TestFiles, Replace them with spaces
 
 Part 2 left:	
 	1) Rules not Reduced?! (Maybe Reduce-Reduce conflict ?)
+
+TO RUN PART 1 on Sublime REPL:
+1) use "loader.sml";
+2) open AST;
+3) open Evalutaor;
+4) parseFile "<NameOfFile>";
+5) !astExps;  to see list of the AST expressions
+6) evalStatements; to calculate the evaluations
+7) !evals; to see the list of Evaluations
