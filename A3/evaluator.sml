@@ -1,17 +1,11 @@
 structure Evaluator = 
 struct 
 open AST
+
 (*Exceptions*)
 val brokenTypes = Fail "Type is Broken!"
 
 val brokenIfThenElse = Fail "if-then-else-fi then and else branch are different or/and if branch is not bool!"
-
-(*Function to evaluate expressions*)
-(*fun evalStatements (statementList : statements,result : evaluations) = 
-    case statementList of
-      [] => result
-    | x::xs => evalStatements (xs,result@[evalExp(x,[])])
-*)
 
 (*Helper functions for evaluating expression*)
 fun getBoolValue (str:string) =
@@ -72,4 +66,11 @@ evalTriExp (c:conditional, e1:exp, e2:exp, e3:exp, env:environment):value =
         (IfThenElse, BoolVal b1, BoolVal b2, BoolVal b3) => BoolVal (evalIfThenElseBool(b1,b2,b3))
     |   (IfThenElse, BoolVal b1, IntVal i1, IntVal i2) => IntVal (evalIfThenElseInt(b1,i1,i2))
     |   _ => raise brokenIfThenElse
+
+(*Function to evaluate expressions*)
+fun evalStatements (statementList) = 
+    case statementList of
+      [] => StringVal "DONE"
+    | x::xs => (evals := evalExp(x,[])::[] @ !evals; evalStatements(xs))
+
 end

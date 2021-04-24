@@ -218,10 +218,9 @@ datatype svalue = VOID | ntVOID of unit ->  unit
  | NUM of unit ->  (int) | CONST of unit ->  (string)
  | ID of unit ->  (string) | decleration of unit ->  (AST.decl)
  | formula of unit ->  (AST.exp) | statement of unit ->  (AST.exp)
- | statements of unit ->  (AST.exp) | program of unit ->  (AST.exp)
 end
 type svalue = MlyValue.svalue
-type result = AST.exp
+type result = unit
 end
 structure EC=
 struct
@@ -288,30 +287,29 @@ val actions =
 fn (i392,defaultPos,stack,
     (()):arg) =>
 case (i392,stack)
-of  ( 0, ( ( _, ( MlyValue.statements statements1, statements1left, 
-statements1right)) :: rest671)) => let val  result = MlyValue.program
- (fn _ => let val  (statements as statements1) = statements1 ()
+of  ( 0, ( ( _, ( MlyValue.ntVOID statements1, statements1left, 
+statements1right)) :: rest671)) => let val  result = MlyValue.ntVOID
+ (fn _ => ( let val  (statements as statements1) = statements1 ()
  in (statements)
-end)
+end; ()))
  in ( LrTable.NT 0, ( result, statements1left, statements1right), 
 rest671)
 end
-|  ( 1, ( ( _, ( MlyValue.statements statements1, _, statements1right)
-) :: ( _, ( MlyValue.statement statement1, statement1left, _)) :: 
-rest671)) => let val  result = MlyValue.statements (fn _ => let val  (
-statement as statement1) = statement1 ()
+|  ( 1, ( ( _, ( MlyValue.ntVOID statements1, _, statements1right)) ::
+ ( _, ( MlyValue.statement statement1, statement1left, _)) :: rest671)
+) => let val  result = MlyValue.ntVOID (fn _ => ( let val  (statement
+ as statement1) = statement1 ()
  val  statements1 = statements1 ()
- in (statement)
-end)
+ in (AST.addASTexp(statement))
+end; ()))
  in ( LrTable.NT 1, ( result, statement1left, statements1right), 
 rest671)
 end
 |  ( 2, ( ( _, ( MlyValue.statement statement1, statement1left, 
-statement1right)) :: rest671)) => let val  result = 
-MlyValue.statements (fn _ => let val  (statement as statement1) = 
-statement1 ()
- in (statement)
-end)
+statement1right)) :: rest671)) => let val  result = MlyValue.ntVOID
+ (fn _ => ( let val  (statement as statement1) = statement1 ()
+ in (AST.addASTexp(statement))
+end; ()))
  in ( LrTable.NT 1, ( result, statement1left, statement1right), 
 rest671)
 end
@@ -509,7 +507,7 @@ end
 | _ => raise (mlyAction i392)
 end
 val void = MlyValue.VOID
-val extract = fn a => (fn MlyValue.program x => x
+val extract = fn a => (fn MlyValue.ntVOID x => x
 | _ => let exception ParseInternal
 	in raise ParseInternal end) a ()
 end

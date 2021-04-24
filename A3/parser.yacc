@@ -7,8 +7,8 @@
 	  IF | THEN | ELSE | FI | LPAREN | RPAREN | LET | IN | END | EQ | NUM of int | TIMES | PLUS | 
 	  MINUS | NEGATE | LESSTHAN | GREATERTHAN | FUN | FN | COLON | ARROW | TO | INT | BOOL
 
-%nonterm program of AST.exp | statements of AST.exp | statement of AST.exp | formula of AST.exp | decleration of AST.decl
-
+%nonterm program | statements | statement of AST.exp | formula of AST.exp | decleration of AST.decl
+		 | funDecl | fnDecl | arguments | typ 
 %pos int
 
 %eop EOF
@@ -22,7 +22,7 @@
 %left LESSTHAN GREATERTHAN
 %left PLUS MINUS
 %left TIMES
-%right NEGATE
+%right NEGATE ARROW 
 %nonassoc EQ
 
 %start program
@@ -31,7 +31,7 @@
 
 %%
 program: statements (statements) 
-statements: statement statements (statement) | statement (statement) 
+statements: statement statements (AST.addASTexp(statement)) | statement (AST.addASTexp(statement))
 statement: formula TERM (formula) 
 
 decleration: ID EQ formula (AST.ValDecl(ID,formula))
