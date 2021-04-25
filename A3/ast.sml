@@ -8,7 +8,12 @@ datatype binop = And | Or | Xor | Equals | Implies |
 				Plus | Minus | Times | Eq | Lessthan | Greaterthan 
 datatype conditional = IfThenElse 
 
-datatype decl = ValDecl of id * exp 
+datatype functypes = Type of string | Arrow of functypes * functypes
+datatype funcdecl = FuncDecl of string * functypes * functypes (*Name of Parameter * Parameter type * Result type*)
+
+datatype function = Fn of funcdecl * exp
+				|	Fun of string * funcdecl * exp (*Name of fun * funcdecl * formula *) 					
+and decl = ValDecl of id * exp
 and exp =  		ConstExp of string
 			|	NumExp of int
 			|	StringExp of string
@@ -17,7 +22,7 @@ and exp =  		ConstExp of string
 			|	BinExp of binop * exp * exp
 			|	TriExp of conditional * exp * exp * exp
 			|	LetExp of decl * exp
-
+			|	FunctionExp of function
 datatype value = IntVal of int
               |  StringVal of string
               |  BoolVal of bool
