@@ -8,7 +8,7 @@
 	  MINUS | NEGATE | LESSTHAN | GREATERTHAN | FUN | FN | COLON | ARROW | TO | INT | BOOL
 
 %nonterm program | statements | statement of AST.exp | formula of AST.exp | decleration of AST.decl
-		 | funDecl | fnDecl | arguments | typ 
+		 | functionDecl | arguments | typ 
 %pos int
 
 %eop EOF
@@ -23,7 +23,7 @@
 %left PLUS MINUS
 %left TIMES
 %right NEGATE ARROW 
-%nonassoc EQ
+%nonassoc EQ FUN FN ID 	
 
 %start program
 
@@ -35,6 +35,10 @@ statements: statement statements (AST.addASTexp(statement)) | statement (AST.add
 statement: formula TERM (formula) 
 
 decleration: ID EQ formula (AST.ValDecl(ID,formula))
+
+functionDecl:  LPAREN arguments RPAREN COLON typ TO ()
+arguments: ID COLON typ () 
+typ: INT () | BOOL () | typ ARROW typ ()
 
 formula: LPAREN formula RPAREN (formula) |
 NOT formula (AST.UnExp(AST.Not,formula)) | 
@@ -53,5 +57,8 @@ formula LESSTHAN formula (AST.BinExp(AST.Lessthan,formula1,formula2)) |
 NUM (AST.NumExp(NUM)) |
 IF formula THEN formula ELSE formula FI (AST.TriExp(AST.IfThenElse,formula1,formula2,formula3)) |
 LET decleration IN formula END (AST.LetExp(decleration,formula)) | 
+FN functionDecl formula (formula) | 
+FUN ID functionDecl formula (formula) |
+ID formula (formula) | 
 CONST (AST.ConstExp(CONST)) | 
 ID (AST.VarExp(ID))
