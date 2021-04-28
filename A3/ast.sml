@@ -8,12 +8,11 @@ datatype binop = And | Or | Xor | Equals | Implies |
 				Plus | Minus | Times | Eq | Lessthan | Greaterthan 
 datatype conditional = IfThenElse 
 
-datatype functypes = Type of string | Arrow of functypes * functypes
-datatype funcdecl = FuncDecl of string * functypes * functypes (*Name of Parameter * Parameter type * Result type*)
+datatype typ = IntTy 
+			|  BoolTy
+			|  FnTy of typ * typ
 
-datatype function = Fn of funcdecl * exp
-				|	Fun of string * funcdecl * exp (*Name of fun * funcdecl * formula *) 					
-and decl = ValDecl of id * exp
+datatype decl = ValDecl of id * exp
 and exp =  		ConstExp of string
 			|	NumExp of int
 			|	StringExp of string
@@ -22,23 +21,41 @@ and exp =  		ConstExp of string
 			|	BinExp of binop * exp * exp
 			|	TriExp of conditional * exp * exp * exp
 			|	LetExp of decl * exp
-			|	FunctionExp of function
+			|	AppExp of exp * exp 
+			|	FnExp of id * typ * typ * exp
+			|	FunExp of id * id * typ * typ * exp 
+
 datatype value = IntVal of int
               |  StringVal of string
               |  BoolVal of bool
+              |	 FnVal of id * exp * (environment ref) (*Pointer to env in which FnExp was defined*)
+(*Scope for all the functions*)
 
+(*type scope = (id * funcdecl * exp) list
+
+val funcScope = ref [] : scope ref
+
+fun addFunToScope (x) = (funcScope := (x::[]) @ !funcScope)
+
+fun scopeLookup (var:id,scpe:scope) = 
+	case List.find(fn (x,_,e) => x = var) scpe of
+		SOME (x,_,e) => e
+	|	NONE => raise Fail ("Function not defined yet!")
+*)
 
 (*AST expressions list*)
-type statements = exp list
 
-val astExps = ref [] : statements ref (* List containing all the statements*)
+(*type statements = exp list
+
+val astExps = ref [] : statements ref  List containing all the statements
 
 fun addASTexp (statement) = (astExps := (statement::[]) @ !astExps)
+*)
 
 (*Evaluation list*)
-type evaluations = value list
+(*type evaluations = value list*)
 
-val evals = ref [] : evaluations ref (* List containing all the evaluations *)
+(*val evals = ref [] : evaluations ref  List containing all the evaluations *)
 
 (*Env*)
 type environment = (id * value) list

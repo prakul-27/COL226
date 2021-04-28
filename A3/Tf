@@ -1,3 +1,6 @@
 let X = 1 in
     if X EQUALS 2 then 3 else 4 fi
 end;
+let X = 2 in
+    if X EQUALS 2 then 3 else 4 fi
+end;

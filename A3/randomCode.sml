@@ -25,3 +25,7 @@ funDecl: FUN LPAREN arguments RPAREN COLON typ TO fnDecl () |
 		 FUN LPAREN arguments RPAREN COLON typ TO formula () 
 arguments: ID COLON typ ()
 typ: INT () | BOOL () | typ ARROW typ ()
+
+
+
+(*AST.FunctionExp(AST.Fun(ID,functionDecl),formula)*)
