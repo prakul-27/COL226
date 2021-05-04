@@ -53,7 +53,7 @@ formula LESSTHAN formula (AST.BinExp(AST.Lessthan,formula1,formula2)) |
 IF formula THEN formula ELSE formula FI (AST.TriExp(AST.IfThenElse,formula1,formula2,formula3)) |
 LET decleration IN formula END (AST.LetExp(decleration,formula)) | 
 FN LPAREN ID COLON Typ RPAREN COLON Typ TO formula (AST.FnExp(ID,Typ1,Typ2,formula)) |
-FUN ID LPAREN ID COLON Typ RPAREN COLON Typ TO formula (AST.FunExp(ID,Typ1,Typ2,formula)) |
+FUN ID LPAREN ID COLON Typ RPAREN COLON Typ TO formula (AST.FunExp(ID1,ID2,Typ1,Typ2,formula)) |
 LPAREN formula formula RPAREN (AST.AppExp(formula1,formula2)) |
 NUM (AST.NumExp(NUM)) |
 CONST (AST.ConstExp(CONST)) | 

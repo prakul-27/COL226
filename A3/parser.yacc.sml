@@ -581,12 +581,12 @@ end
  :: ( _, ( MlyValue.Typ Typ2, _, _)) :: _ :: _ :: ( _, ( MlyValue.Typ 
 Typ1, _, _)) :: _ :: ( _, ( MlyValue.ID ID2, _, _)) :: _ :: ( _, ( 
 MlyValue.ID ID1, _, _)) :: ( _, ( _, FUN1left, _)) :: rest671)) => let
- val  result = MlyValue.formula (fn _ => let val  (ID as ID1) = ID1 ()
+ val  result = MlyValue.formula (fn _ => let val  ID1 = ID1 ()
  val  ID2 = ID2 ()
  val  Typ1 = Typ1 ()
  val  Typ2 = Typ2 ()
  val  (formula as formula1) = formula1 ()
- in (AST.FunExp(ID,Typ1,Typ2,formula))
+ in (AST.FunExp(ID1,ID2,Typ1,Typ2,formula))
 end)
  in ( LrTable.NT 3, ( result, FUN1left, formula1right), rest671)
 end

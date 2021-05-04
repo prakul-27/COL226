@@ -1,7 +1,11 @@
 structure Typing =
 struct 
-		 (*Typing information is a synthesised attribute !!*)
-open AST (*Traverse the AST to compute value of synthesised attributes*)
+		 
+open AST
+
+fun bothBoolTy (e1Type,e2Type) = (e1Type = BoolTy andalso e2Type = BoolTy)
+	
+fun bothIntTy (e1Type,e2Type) = (e1Type = IntTy andalso e2Type = IntTy)
 
 type typEnv = (id * typ) list
 
@@ -10,26 +14,27 @@ fun typEnvLookup (var:id, env:typEnv):typ =
 		SOME (x,v) => v
 	|	NONE => raise Fail ("Variable " ^ var ^ " is without a type")
 
-fun typEnvAdd (var:id, t:typ, env:typEnv):typ = 
+fun typEnvAdd (var:id, t:typ, env:typEnv):typEnv = 
 	(var,t)::env
 
 fun getType (e:exp, env:typEnv):typ = 
 	case e of 
 		NumExp _ 		=> 	IntTy
-	|	BoolExp _ 		=> 	BoolTy
+	|	StringExp _ 	=>  StringTy
+	|	ConstExp _ 		=> 	BoolTy
 	|	VarExp x 		=> 	typEnvLookup (x,env)
 	|	AppExp (e1,e2) 	=>	
 		(case (getType(e1,env),getType(e2,env)) of 
-			|	FnTy((t1,t2),t3) => 
+				(FnTy(t1,t2),t3) => 
 				if t1 = t3
 				then t2
 				else raise Fail "Application arguments type mismatch"
 
-				(_,_) => raise Fail "Function was expected"
+			|	(_) => raise Fail "Function was expected"
 		)
 	| 	FnExp (x,t1,t2,e) =>
 		(
-			FnTy (t, getType(e, typEnvAdd(x,t,env))) 
+			FnTy (t1, getType(e, typEnvAdd(x,t2,env))) 
 		)
 	|	TriExp (cond,e1,e2,e3) => 
 		(
@@ -46,12 +51,79 @@ fun getType (e:exp, env:typEnv):typ =
 					else t2
 			end
 		)
-	|	FunExp (fname,x2,t1,t2,e) =>
+	|	FunExp (fname,x,t1,t2,e) =>
 		(
 			let
-				val eType = getType (e, typEnvAdd(fname,t2,env))
+				val eType = getType (e, typEnvAdd(fname,t2,typEnvAdd(x,t1,env)))
 			in
-				
+				if eType <> t2
+				then raise Fail "Mismatch in declared and actual type"
+				else t2
 			end
 		)
+	|	UnExp (operator,e) =>
+		(
+			let
+				val eType = getType (e,env)
+			in
+				(case operator of
+						Not => (if eType = BoolTy 
+								then eType 
+								else raise Fail "Type Error")
+					|	Negate => (	if eType = IntTy
+									then eType
+									else raise Fail "Type Error")
+				)
+			end
+		)
+	|	BinExp (operator,e1,e2) =>
+		(
+			let
+				val e1Type = getType (e1,env)
+				val e2Type = getType (e2,env)
+			in
+				(case operator of
+					And 	=> (if (bothBoolTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Or 		=> (if (bothBoolTy(e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Xor 	=> (if (bothBoolTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Equals 	=> (if (bothBoolTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Implies => (if (bothBoolTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Plus 	=> (if (bothIntTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Minus 	=> (if (bothIntTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Times 	=> (if (bothIntTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")
+				|	Lessthan => (if (bothIntTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")							
+				|	Greaterthan => (if (bothIntTy (e1Type,e2Type))
+							then e1Type
+							else raise Fail "Type Error")							
+				)
+			end
+		)
+	|	LetExp (decleration,e) => getType (e, env)
+
+type ts = typ list
+
+val types = ref [] : ts ref
+
+fun getTypeofStatements (statementList) = 
+	case statementList of
+			[] => ()
+		| 	x::xs => (types := getType(x,[])::[] @ !types; getTypeofStatements(xs))
 end

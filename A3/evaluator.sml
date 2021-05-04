@@ -26,36 +26,37 @@ fun evalIfThenElseInt (x:bool, i1:int, i2:int) =
 (*Main function to evaluate expresssion*)
 fun evalExp(e:exp, env:environment):value =
     case e of
-	      NumExp i          => IntVal i
+	      NumExp i            => IntVal i
       | ConstExp b          => BoolVal (getBoolValue(b))
       | UnExp (u,e1)        => evalUnExp (u,e1,env)
       | StringExp s         => StringVal s
       | VarExp x            => envLookup (x, env) 				  
       | BinExp (b, e1, e2)  => evalBinExp(b, e1, e2, env)
       | TriExp (c,e1,e2,e3) => evalTriExp(c, e1, e2, e3, env)
-      | FunctionExp (func,e) => 
-    let 
-        fun check (f) = 
-            case f of
-                Fn (fdecl) =>   let (* fn (x:int):int => x PLUS 3; *)
-                                    
-                                in
-                                    ()
-                                end 
-            |   Fun (x1,fdecl) =>   let
-                                        val _ = addFunToScope(x1,fdecl,e)
-                                    in
-                                        ()
-                                    end
-            |   FunCall (x) =>  let 
-                                    val v = scopeLookup(x,!funcScope) (*v is exp type*)
-                                    val u = evalExp(e,env)
-                                in
-                                    ()
-                                end
-    in
-        IntVal 4 (*FuncVal check(func)*)
-    end    
+      | FnExp (x1,_,_,e1)   => FnVal (x1,e1,ref env)
+      | AppExp (e1,e2)      => 
+        (case evalExp (e1,env) of
+            FnVal (x1,body,enclosingEnv) => 
+            (
+              let
+                  val v1 = evalExp (e2,env)
+              in
+                  evalExp (body,envAdd (x1,v1,!enclosingEnv))
+              end
+            )
+          | _ => raise brokenTypes
+
+        )
+      | FunExp (fname,x1,_,_,body) =>
+        (
+          let
+            val intialEnv = ref []
+            val enclosingEnv = envAdd (fname,FnVal(x1,body,intialEnv),env)
+            val () = (intialEnv := enclosingEnv)
+          in
+            evalExp (appexp, enclosingEnv)                      
+          end
+        )
       | LetExp(ValDecl(x, e1), e2)  =>
   	let
 	    val v1 = evalExp (e1, env)
@@ -89,13 +90,6 @@ evalTriExp (c:conditional, e1:exp, e2:exp, e3:exp, env:environment):value =
         (IfThenElse, BoolVal b1, BoolVal b2, BoolVal b3) => BoolVal (evalIfThenElseBool(b1,b2,b3))
     |   (IfThenElse, BoolVal b1, IntVal i1, IntVal i2) => IntVal (evalIfThenElseInt(b1,i1,i2))
     |   _ => raise brokenIfThenElse
-(*evalFunctionExp (f:function, e:exp, env:environment) = 
-  case (f, evalExp(e,env)) = 
-    (FunCall, e1) => evalExp(e1,env)
-  | (Fun, e1) => evalExp(e1,env) 
-  | (Fn, e1) => evalExp(e1,env)
-*)
-(*Function to evaluate expressions*)
 fun evalStatements (statementList) = 
     case statementList of
       [] => StringVal "DONE"
