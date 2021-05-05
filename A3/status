@@ -9,9 +9,8 @@ Part 3 left:
 
 TO RUN PART 1 on Sublime REPL:
 1) use "loader.sml";
-2) open AST;
-3) open Evalutaor;
-4) parseFile "<NameOfFile>";
-5) !astExps;  to see list of the AST expressions
-6) evalStatements(!astExps) ; to calculate the evaluations
-7) !evals; to see the list of Evaluations
+2) !astExps;  -- to see the ast of statements
+3) getTypeofStatements (!astExps); -- to evaluate types
+4) reverseList (!types,[]); -- to see the types of statements
+5) evaluateStatements (!astExps);  -- to evaluate types
+6) reverseList (!evals,[]); -- to see the evaluations of statements

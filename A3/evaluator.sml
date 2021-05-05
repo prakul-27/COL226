@@ -52,9 +52,9 @@ fun evalExp(e:exp, env:environment):value =
           let
             val intialEnv = ref []
             val enclosingEnv = envAdd (fname,FnVal(x1,body,intialEnv),env)
-            val () = (intialEnv := enclosingEnv)
+            val () = intialEnv := enclosingEnv            
           in
-            evalExp (appexp, enclosingEnv)                      
+             FnVal (fname,body,intialEnv)
           end
         )
       | LetExp(ValDecl(x, e1), e2)  =>
@@ -92,7 +92,7 @@ evalTriExp (c:conditional, e1:exp, e2:exp, e3:exp, env:environment):value =
     |   _ => raise brokenIfThenElse
 fun evalStatements (statementList) = 
     case statementList of
-      [] => StringVal "DONE"
+      [] => ()
     | x::xs => (evals := evalExp(x,[])::[] @ !evals; evalStatements(xs))
 
 end

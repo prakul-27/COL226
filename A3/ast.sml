@@ -29,7 +29,7 @@ and exp =  		ConstExp of string
 datatype value = IntVal of int
               |  StringVal of string
               |  BoolVal of bool
-              |	 FnVal of id * exp * ((id * value) ref) (*Pointer to env in which FnExp was defined*)
+              |	 FnVal of id * exp * ((id * value) list ref) (*Pointer to env in which FnExp was defined*)
 
 (*Scope for all the functions*)
 
@@ -69,5 +69,8 @@ fun envLookup (var:id, env:environment) =
     case List.find(fn (x, _) => x = var) env of
 				        SOME (x, v)   => v
 				    |   NONE => raise Fail "Environment lookup error"							   
+
+fun reverseList (x,z) = 
+	if null (x) then z else reverseList (tl x,hd (x)::z)
 
 end

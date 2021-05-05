@@ -92,9 +92,9 @@ fun getType (e:exp, env:typEnv):typ =
 				|	Xor 	=> (if (bothBoolTy (e1Type,e2Type))
 							then e1Type
 							else raise Fail "Type Error")
-				|	Equals 	=> (if (bothBoolTy (e1Type,e2Type))
+				|	Equals 	=> (if (bothBoolTy (e1Type,e2Type) orelse bothIntTy(e1Type,e2Type))
 							then e1Type
-							else raise Fail "Type Error")
+							else raise Fail "Equals type is broken")
 				|	Implies => (if (bothBoolTy (e1Type,e2Type))
 							then e1Type
 							else raise Fail "Type Error")
@@ -108,10 +108,10 @@ fun getType (e:exp, env:typEnv):typ =
 							then e1Type
 							else raise Fail "Type Error")
 				|	Lessthan => (if (bothIntTy (e1Type,e2Type))
-							then e1Type
+							then BoolTy
 							else raise Fail "Type Error")							
 				|	Greaterthan => (if (bothIntTy (e1Type,e2Type))
-							then e1Type
+							then BoolTy
 							else raise Fail "Type Error")							
 				)
 			end
