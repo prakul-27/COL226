@@ -1,2 +1,1 @@
-fun y(x:int):int => x PLUS 3;
-(y 3);
+fn (x:int):int => x PLUS 3;
