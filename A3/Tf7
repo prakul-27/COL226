@@ -1,1 +1,2 @@
-let X = TRUE in X XOR NOT X end;
+fun y(x:int):int => x PLUS 3;
+(y 3);

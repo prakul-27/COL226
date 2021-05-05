@@ -5,6 +5,7 @@ Part 2 left:
 
 Part 3 left:
 	1) Some error in functions type-checking
+	2) Still adding persistantly to type Env
 
 TO RUN PART 1 on Sublime REPL:
 1) use "loader.sml";

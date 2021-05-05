@@ -3,9 +3,21 @@ struct
 		 
 open AST
 
-fun bothBoolTy (e1Type,e2Type) = (e1Type = BoolTy andalso e2Type = BoolTy)
+fun checkValidBoolType t =
+	case t of 
+		BoolTy => true
+	|	FnTy (t1,t2) => (t2 = BoolTy)
+	|	_ => false
+
+fun checkValidIntType t = 
+	case t of
+		IntTy => true
+	|	FnTy (t1,t2) => (t2 = IntTy)
+	|	_ => false
+
+fun bothBoolTy (e1Type,e2Type) = ((checkValidBoolType e1Type) andalso (checkValidBoolType e2Type))
 	
-fun bothIntTy (e1Type,e2Type) = (e1Type = IntTy andalso e2Type = IntTy)
+fun bothIntTy (e1Type,e2Type) = ((checkValidIntType e1Type) andalso (checkValidIntType e2Type))
 
 type typEnv = (id * typ) list
 
@@ -24,17 +36,18 @@ fun getType (e:exp, env:typEnv):typ =
 	|	ConstExp _ 		=> 	BoolTy
 	|	VarExp x 		=> 	typEnvLookup (x,env)
 	|	AppExp (e1,e2) 	=>	
-		(case (getType(e1,env),getType(e2,env)) of 
-				(FnTy(t1,t2),t3) => 
+		(
+			case (getType(e1,env),getType(e2,env)) of
+				(FnTy (t1,t2),t3) =>
 				if t1 = t3
 				then t2
 				else raise Fail "Application arguments type mismatch"
 
-			|	(_) => raise Fail "Function was expected"
+			|	_ => raise Fail "Function was expected"
 		)
 	| 	FnExp (x,t1,t2,e) =>
 		(
-			FnTy (t1, getType(e, typEnvAdd(x,t2,env))) 
+			FnTy (getType (e,typEnvAdd(x,t1,env)), t2)
 		)
 	|	TriExp (cond,e1,e2,e3) => 
 		(
@@ -54,11 +67,11 @@ fun getType (e:exp, env:typEnv):typ =
 	|	FunExp (fname,x,t1,t2,e) =>
 		(
 			let
-				val eType = getType (e, typEnvAdd(fname,t2,typEnvAdd(x,t1,env)))
+				val eType = getType (e, typEnvAdd(fname,FnTy(t1,t2),typEnvAdd(x,t1,env)))
 			in
 				if eType <> t2
 				then raise Fail "Mismatch in declared and actual type"
-				else t2
+				else FnTy (t1,t2)
 			end
 		)
 	|	UnExp (operator,e) =>
@@ -67,11 +80,11 @@ fun getType (e:exp, env:typEnv):typ =
 				val eType = getType (e,env)
 			in
 				(case operator of
-						Not => (if eType = BoolTy 
-								then eType 
+						Not => (if (checkValidBoolType eType)
+								then BoolTy 
 								else raise Fail "Type Error")
-					|	Negate => (	if eType = IntTy
-									then eType
+					|	Negate => (	if (checkValidIntType eType)
+									then IntTy
 									else raise Fail "Type Error")
 				)
 			end
@@ -93,14 +106,14 @@ fun getType (e:exp, env:typEnv):typ =
 							then e1Type
 							else raise Fail "Type Error")
 				|	Equals 	=> (if (bothBoolTy (e1Type,e2Type) orelse bothIntTy(e1Type,e2Type))
-							then e1Type
+							then e1Type 
 							else raise Fail "Equals type is broken")
 				|	Implies => (if (bothBoolTy (e1Type,e2Type))
 							then e1Type
 							else raise Fail "Type Error")
 				|	Plus 	=> (if (bothIntTy (e1Type,e2Type))
 							then e1Type
-							else raise Fail "Type Error")
+							else raise Fail "Plus Type is broken")
 				|	Minus 	=> (if (bothIntTy (e1Type,e2Type))
 							then e1Type
 							else raise Fail "Type Error")
@@ -108,10 +121,10 @@ fun getType (e:exp, env:typEnv):typ =
 							then e1Type
 							else raise Fail "Type Error")
 				|	Lessthan => (if (bothIntTy (e1Type,e2Type))
-							then BoolTy
+							then e1Type
 							else raise Fail "Type Error")							
 				|	Greaterthan => (if (bothIntTy (e1Type,e2Type))
-							then BoolTy
+							then e1Type
 							else raise Fail "Type Error")
 				|	Eq 		=>	e2Type							
 				)
