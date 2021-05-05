@@ -1,0 +1,1 @@
+let X = TRUE in X XOR NOT X end;

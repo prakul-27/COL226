@@ -4,8 +4,7 @@ Part 2 left:
 	1) Do fun -> fn -> fn ... -> fn in currying form
 
 Part 3 left:
-	1) How to type check Eq ? 
-	2) Some error in functions type-checking
+	1) Some error in functions type-checking
 
 TO RUN PART 1 on Sublime REPL:
 1) use "loader.sml";

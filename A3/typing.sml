@@ -112,11 +112,31 @@ fun getType (e:exp, env:typEnv):typ =
 							else raise Fail "Type Error")							
 				|	Greaterthan => (if (bothIntTy (e1Type,e2Type))
 							then BoolTy
-							else raise Fail "Type Error")							
+							else raise Fail "Type Error")
+				|	Eq 		=>	e2Type							
 				)
 			end
 		)
-	|	LetExp (decleration,e) => getType (e, env)
+	|	LetExp (dec,e) => 
+		(
+			let
+				val letType = 
+				(
+					case dec of 
+						ValDecl (name,e1) =>
+						(
+							let
+								val declType = getType (e1,env)
+								val eType = getType (e,typEnvAdd (name,declType,env))
+							in
+								eType								
+							end
+						)
+				)
+			in
+				letType
+			end
+		)
 
 type ts = typ list
 
