@@ -1,3 +1,2 @@
 # COL226
-Assignments
-3rd not completed
+Assignments -- 3rd not completed
